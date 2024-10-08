@@ -3,7 +3,7 @@ import "./style.css";
 
 const app: HTMLDivElement = document.querySelector("#app")!;
 
-const gameName = "My amazing cookie clicker game";
+const gameName = "My amazing clicker game";
 document.title = gameName;
 
 const header = document.createElement("h1");
@@ -25,3 +25,8 @@ button.addEventListener("click", () => {
 });
 
 app.append(button);
+
+setInterval(() => {
+  counter += 1;
+  counterDiv.textContent = `${counter} swords`;
+}, 1000);
