@@ -26,7 +26,16 @@ button.addEventListener("click", () => {
 
 app.append(button);
 
-setInterval(() => {
-  counter += 1;
+let lastFrameTime = performance.now();
+
+const incrementCounter = (currentTime: DOMHighResTimeStamp) => {
+  const value = (currentTime - lastFrameTime) / 1000;
+  counter += value;
+
   counterDiv.textContent = `${counter} swords`;
-}, 1000);
+
+  lastFrameTime = currentTime;
+  requestAnimationFrame(incrementCounter);
+};
+
+requestAnimationFrame(incrementCounter);
