@@ -3,7 +3,7 @@ import "./style.css";
 
 const app: HTMLDivElement = document.querySelector("#app")!;
 
-const gameName = "My amazing clicker game";
+const gameName = "Fishing game";
 document.title = gameName;
 
 const header = document.createElement("h1");
@@ -29,31 +29,31 @@ const currentCosts = { ...initialCosts };
 
 // displays here
 const counterDiv = document.createElement("div");
-counterDiv.textContent = `${counter} swords`;
+counterDiv.textContent = `${counter} fish`;
 app.append(counterDiv);
 
 const growthRateDiv = document.createElement("div");
-growthRateDiv.textContent = `${growthRate.toFixed(2)} cookies/sec`;
+growthRateDiv.textContent = `${growthRate.toFixed(2)} fish/sec`;
 app.append(growthRateDiv);
 
 const purchasedItemsDiv = document.createElement("div");
-purchasedItemsDiv.textContent = `Purchased: A - ${itemsPurchased.A} times, B - ${itemsPurchased.B} times, C- ${itemsPurchased.C} times`;
+purchasedItemsDiv.textContent = `Purchased: Assistant - ${itemsPurchased.A} times, Fishing Boat - ${itemsPurchased.B} times,  Fishing Net - ${itemsPurchased.C} times`;
 app.append(purchasedItemsDiv);
 
 // helper functions here
 const updateDisplays = () => {
-  counterDiv.textContent = `${counter} swords`;
-  growthRateDiv.textContent = `${growthRate.toFixed(2)} cookies/sec`;
-  purchasedItemsDiv.textContent = `Purchased: A - ${itemsPurchased.A} times, B - ${itemsPurchased.B} times, C- ${itemsPurchased.C} times`;
+  counterDiv.textContent = `${counter} fish`;
+  growthRateDiv.textContent = `${growthRate.toFixed(2)} fish/sec`;
+  purchasedItemsDiv.textContent = `Purchased: Assistant - ${itemsPurchased.A} times, Fishing Boat - ${itemsPurchased.B} times, Fishing Net- ${itemsPurchased.C} times`;
 };
 
 // click
 const button = document.createElement("button");
-button.textContent = "⚔️ Click";
+button.textContent = "🎣CAST YOUR LINE!";
 button.addEventListener("click", () => {
   // console.log("Clicked");
   counter += 1;
-  counterDiv.textContent = `${counter} swords`;
+  counterDiv.textContent = `${counter} fish`;
 
   /*
   if (counter >= 10) {
@@ -72,7 +72,7 @@ const createUpgradeButton = (
   upgradeType: keyof typeof itemsPurchased
 ) => {
   const upgradeButton = document.createElement("button");
-  upgradeButton.textContent = `Purchase ${label} | Reward: +${rate} growth rate | Cost: ${cost} Swords`;
+  upgradeButton.textContent = `Purchase ${label} | Reward: +${rate} growth rate | Cost: ${cost} fish`;
   upgradeButton.disabled = true;
 
   upgradeButton.addEventListener("click", () => {
@@ -84,7 +84,7 @@ const createUpgradeButton = (
       itemsPurchased[upgradeType] += 1;
       currentCosts[upgradeType] *= 1.15;
 
-      upgradeButton.textContent = `Purchase ${label} | Reward: +${rate} growth rate | Cost: ${currentCosts[upgradeType].toFixed(2)} Swords`;
+      upgradeButton.textContent = `Purchase ${label} | Reward: +${rate} growth rate | Cost: ${currentCosts[upgradeType].toFixed(2)} fish`;
 
       updateDisplays();
     }
@@ -103,9 +103,9 @@ const createUpgradeButton = (
   return { button: upgradeButton, checkUpgradeAvaiability };
 };
 
-const upgradeA = createUpgradeButton("Upgrade A", currentCosts.A, 0.1, "A");
-const upgradeB = createUpgradeButton("Upgrade B", currentCosts.B, 2, "B");
-const upgradeC = createUpgradeButton("Upgrade C", currentCosts.C, 50, "C");
+const upgradeA = createUpgradeButton("Assistant", currentCosts.A, 0.1, "A");
+const upgradeB = createUpgradeButton("Fishing Boat", currentCosts.B, 2, "B");
+const upgradeC = createUpgradeButton("Fishing Net", currentCosts.C, 50, "C");
 
 const checkAllUpgrades = () => {
   upgradeA.checkUpgradeAvaiability();
