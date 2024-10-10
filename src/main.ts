@@ -7,12 +7,23 @@ interface Item {
   name: string;
   cost: number;
   rate: number;
+  desc: string;
 }
 
 const availableItems: Item[] = [
-  { name: "Assistant", cost: 10, rate: 0.1 },
-  { name: "Fishing Boat", cost: 100, rate: 2 },
-  { name: "Fishing Net", cost: 1000, rate: 50 },
+  { name: "Assistant", cost: 10, rate: 0.1, desc: "Helper to snag more fish." },
+  {
+    name: "Fishing Boat",
+    cost: 100,
+    rate: 2,
+    desc: "Boat to scoop more fish.",
+  },
+  {
+    name: "Fishing Net",
+    cost: 1000,
+    rate: 50,
+    desc: "Net to catch more fish.",
+  },
 ];
 
 const gameName = "Fish Clicker";
@@ -47,8 +58,13 @@ app.append(growthRateDiv);
 const purchasedItemsDiv = document.createElement("div");
 
 const updatePurchasedItemsDisplay = () => {
-  purchasedItemsDiv.textContent = `Purchased: Assistant - ${itemsPurchased.A} times, Fishing Boat - ${itemsPurchased.B} times,  Fishing Net - ${itemsPurchased.C} times`;
+  purchasedItemsDiv.textContent =
+    "Purchased: " +
+    availableItems
+      .map((item) => `${item.name} - ${itemsPurchased[item.name]} times`)
+      .join(", ");
 };
+
 app.append(purchasedItemsDiv);
 
 // helper functions here
