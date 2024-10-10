@@ -10,13 +10,36 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
+// define variables
 let counter: number = 0;
 let growthRate: number = 0;
+const itemsPurchased: { A: number; B: number; C: number } = {
+  A: 0,
+  B: 0,
+  C: 0,
+};
 
+// displays here
 const counterDiv = document.createElement("div");
 counterDiv.textContent = `${counter} swords`;
 app.append(counterDiv);
 
+const growthRateDiv = document.createElement("div");
+growthRateDiv.textContent = `${growthRate.toFixed(2)} cookies/sec`;
+app.append(growthRateDiv);
+
+const purchasedItemsDiv = document.createElement("div");
+purchasedItemsDiv.textContent = `Purchased: A - ${itemsPurchased.A} times, B - ${itemsPurchased.B} times, C- ${itemsPurchased.C} times`;
+app.append(purchasedItemsDiv);
+
+// helper functions here
+const updateDisplays = () => {
+  counterDiv.textContent = `${counter} swords`;
+  growthRateDiv.textContent = `${growthRate.toFixed(2)} cookies/sec`;
+  purchasedItemsDiv.textContent = `Purchased: A - ${itemsPurchased.A} times, B - ${itemsPurchased.B} times, C- ${itemsPurchased.C} times`;
+};
+
+// click
 const button = document.createElement("button");
 button.textContent = "⚔️ Click";
 button.addEventListener("click", () => {
@@ -24,40 +47,68 @@ button.addEventListener("click", () => {
   counter += 1;
   counterDiv.textContent = `${counter} swords`;
 
+  /*
   if (counter >= 10) {
     upgradeButton.disabled = false;
   }
+  */
 });
 
 app.append(button);
 
-const upgradeButton = document.createElement("button");
-upgradeButton.textContent =
-  "Purchase Upgrade | Reward: +1 growth rate | Cost: 10 Swords";
-upgradeButton.disabled = true;
+// function to make upgrade button
+const createUpgradeButton = (
+  label: string,
+  cost: number,
+  rate: number,
+  upgradeType: keyof typeof itemsPurchased
+) => {
+  const upgradeButton = document.createElement("button");
+  upgradeButton.textContent = `Purchase ${label} | Reward: +${rate} growth rate | Cost: ${cost} Swords`;
+  upgradeButton.disabled = true;
 
-upgradeButton.addEventListener("click", () => {
-  if (counter >= 10) {
-    counter -= 10;
-    growthRate += 1;
+  upgradeButton.addEventListener("click", () => {
+    if (counter >= cost) {
+      counter -= cost;
+      growthRate += rate;
+      itemsPurchased[upgradeType] += 1;
+      updateDisplays();
+    }
+  });
 
-    if (counter <= 0) {
+  app.append(upgradeButton);
+
+  const checkUpgradeAvaiability = () => {
+    if (counter < cost) {
       upgradeButton.disabled = true;
     } else {
       upgradeButton.disabled = false;
     }
-  }
-});
+  };
 
-app.append(upgradeButton);
+  return { button: upgradeButton, checkUpgradeAvaiability };
+};
 
+const upgradeA = createUpgradeButton("Upgrade A", 10, 0.1, "A");
+const upgradeB = createUpgradeButton("Upgrade B", 100, 2, "B");
+const upgradeC = createUpgradeButton("Upgrade C", 1000, 50, "A");
+
+const checkAllUpgrades = () => {
+  upgradeA.checkUpgradeAvaiability();
+  upgradeB.checkUpgradeAvaiability();
+  upgradeC.checkUpgradeAvaiability();
+};
+
+// growth rate
 let lastFrameTime = performance.now();
 
 const incrementCounter = (currentTime: DOMHighResTimeStamp) => {
   const value = (currentTime - lastFrameTime) / 1000;
   counter += growthRate * value;
 
-  counterDiv.textContent = `${counter} swords`;
+  // counterDiv.textContent = `${counter} swords`;
+  updateDisplays();
+  checkAllUpgrades();
 
   lastFrameTime = currentTime;
   requestAnimationFrame(incrementCounter);
