@@ -24,6 +24,18 @@ const availableItems: Item[] = [
     rate: 50,
     desc: "Net to catch more fish.",
   },
+  {
+    name: "Fishing Trawler",
+    cost: 2500,
+    rate: 250,
+    desc: "Big ship to haul in tons of fish.",
+  },
+  {
+    name: "Deep Sea Sonar",
+    cost: 5000,
+    rate: 1000,
+    desc: "Sonar to find rare fish deeper in the ocean.",
+  },
 ];
 
 const gameName = "Fish Clicker";
@@ -93,7 +105,7 @@ app.append(button);
 // function to make upgrade button
 const createUpgradeButton = (item: Item) => {
   const upgradeButton = document.createElement("button");
-  upgradeButton.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${item.cost} fish`;
+  upgradeButton.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${item.cost} fish | Desc: ${item.desc}`;
   upgradeButton.disabled = true;
 
   upgradeButton.addEventListener("click", () => {
@@ -105,7 +117,7 @@ const createUpgradeButton = (item: Item) => {
       itemsPurchased[item.name] += 1;
       currentCosts[item.name] *= 1.15;
 
-      upgradeButton.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${currentCosts[item.name].toFixed(2)} fish`;
+      upgradeButton.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${currentCosts[item.name].toFixed(2)} fish | Desc: ${item.desc}`;
 
       updateDisplays();
     }
