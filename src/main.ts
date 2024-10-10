@@ -3,6 +3,18 @@ import "./style.css";
 
 const app: HTMLDivElement = document.querySelector("#app")!;
 
+interface Item {
+  name: string;
+  cost: number;
+  rate: number;
+}
+
+const availableItems: Item[] = [
+  { name: "Assistant", cost: 10, rate: 0.1 },
+  { name: "Fishing Boat", cost: 100, rate: 2 },
+  { name: "Fishing Net", cost: 1000, rate: 50 },
+];
+
 const gameName = "Fish Clicker";
 document.title = gameName;
 
@@ -13,19 +25,15 @@ app.append(header);
 // define variables
 let counter: number = 0;
 let growthRate: number = 0;
-const itemsPurchased: { A: number; B: number; C: number } = {
-  A: 0,
-  B: 0,
-  C: 0,
-};
 
-const initialCosts: { A: number; B: number; C: number } = {
-  A: 10,
-  B: 100,
-  C: 1000,
-};
+const itemsPurchased: { [key: string]: number } = {};
 
-const currentCosts = { ...initialCosts };
+const currentCosts: { [key: string]: number } = {};
+
+availableItems.forEach((item) => {
+  itemsPurchased[item.name] = 0;
+  currentCosts[item.name] = item.cost;
+});
 
 // displays here
 const counterDiv = document.createElement("div");
@@ -37,14 +45,17 @@ growthRateDiv.textContent = `${growthRate.toFixed(2)} fish/sec`;
 app.append(growthRateDiv);
 
 const purchasedItemsDiv = document.createElement("div");
-purchasedItemsDiv.textContent = `Purchased: Assistant - ${itemsPurchased.A} times, Fishing Boat - ${itemsPurchased.B} times,  Fishing Net - ${itemsPurchased.C} times`;
+
+const updatePurchasedItemsDisplay = () => {
+  purchasedItemsDiv.textContent = `Purchased: Assistant - ${itemsPurchased.A} times, Fishing Boat - ${itemsPurchased.B} times,  Fishing Net - ${itemsPurchased.C} times`;
+};
 app.append(purchasedItemsDiv);
 
 // helper functions here
 const updateDisplays = () => {
   counterDiv.textContent = `${counter} fish`;
   growthRateDiv.textContent = `${growthRate.toFixed(2)} fish/sec`;
-  purchasedItemsDiv.textContent = `Purchased: Assistant - ${itemsPurchased.A} times, Fishing Boat - ${itemsPurchased.B} times, Fishing Net- ${itemsPurchased.C} times`;
+  updatePurchasedItemsDisplay();
 };
 
 // click
@@ -53,8 +64,7 @@ button.textContent = "🎣CAST YOUR LINE!";
 button.addEventListener("click", () => {
   // console.log("Clicked");
   counter += 1;
-  counterDiv.textContent = `${counter} fish`;
-
+  updateDisplays();
   /*
   if (counter >= 10) {
     upgradeButton.disabled = false;
@@ -65,26 +75,21 @@ button.addEventListener("click", () => {
 app.append(button);
 
 // function to make upgrade button
-const createUpgradeButton = (
-  label: string,
-  cost: number,
-  rate: number,
-  upgradeType: keyof typeof itemsPurchased
-) => {
+const createUpgradeButton = (item: Item) => {
   const upgradeButton = document.createElement("button");
-  upgradeButton.textContent = `Purchase ${label} | Reward: +${rate} growth rate | Cost: ${cost} fish`;
+  upgradeButton.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${item.cost} fish`;
   upgradeButton.disabled = true;
 
   upgradeButton.addEventListener("click", () => {
-    const currentCost = currentCosts[upgradeType];
+    const currentCost = currentCosts[item.name];
 
     if (counter >= currentCost) {
       counter -= currentCost;
-      growthRate += rate;
-      itemsPurchased[upgradeType] += 1;
-      currentCosts[upgradeType] *= 1.15;
+      growthRate += item.rate;
+      itemsPurchased[item.name] += 1;
+      currentCosts[item.name] *= 1.15;
 
-      upgradeButton.textContent = `Purchase ${label} | Reward: +${rate} growth rate | Cost: ${currentCosts[upgradeType].toFixed(2)} fish`;
+      upgradeButton.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${currentCosts[item.name].toFixed(2)} fish`;
 
       updateDisplays();
     }
@@ -93,7 +98,7 @@ const createUpgradeButton = (
   app.append(upgradeButton);
 
   const checkUpgradeAvaiability = () => {
-    if (counter < currentCosts[upgradeType]) {
+    if (counter < currentCosts[item.name]) {
       upgradeButton.disabled = true;
     } else {
       upgradeButton.disabled = false;
@@ -103,14 +108,10 @@ const createUpgradeButton = (
   return { button: upgradeButton, checkUpgradeAvaiability };
 };
 
-const upgradeA = createUpgradeButton("Assistant", currentCosts.A, 0.1, "A");
-const upgradeB = createUpgradeButton("Fishing Boat", currentCosts.B, 2, "B");
-const upgradeC = createUpgradeButton("Fishing Net", currentCosts.C, 50, "C");
+const upgradeButtons = availableItems.map((item) => createUpgradeButton(item));
 
 const checkAllUpgrades = () => {
-  upgradeA.checkUpgradeAvaiability();
-  upgradeB.checkUpgradeAvaiability();
-  upgradeC.checkUpgradeAvaiability();
+  upgradeButtons.forEach((upgrade) => upgrade.checkUpgradeAvaiability());
 };
 
 // growth rate
