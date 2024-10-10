@@ -19,6 +19,14 @@ const itemsPurchased: { A: number; B: number; C: number } = {
   C: 0,
 };
 
+const initialCosts: { A: number; B: number; C: number } = {
+  A: 10,
+  B: 100,
+  C: 1000,
+};
+
+const currentCosts = { ...initialCosts };
+
 // displays here
 const counterDiv = document.createElement("div");
 counterDiv.textContent = `${counter} swords`;
@@ -68,10 +76,16 @@ const createUpgradeButton = (
   upgradeButton.disabled = true;
 
   upgradeButton.addEventListener("click", () => {
-    if (counter >= cost) {
-      counter -= cost;
+    const currentCost = currentCosts[upgradeType];
+
+    if (counter >= currentCost) {
+      counter -= currentCost;
       growthRate += rate;
       itemsPurchased[upgradeType] += 1;
+      currentCosts[upgradeType] *= 1.15;
+
+      upgradeButton.textContent = `Purchase ${label} | Reward: +${rate} growth rate | Cost: ${currentCosts[upgradeType].toFixed(2)} Swords`;
+
       updateDisplays();
     }
   });
@@ -79,7 +93,7 @@ const createUpgradeButton = (
   app.append(upgradeButton);
 
   const checkUpgradeAvaiability = () => {
-    if (counter < cost) {
+    if (counter < currentCosts[upgradeType]) {
       upgradeButton.disabled = true;
     } else {
       upgradeButton.disabled = false;
@@ -89,9 +103,9 @@ const createUpgradeButton = (
   return { button: upgradeButton, checkUpgradeAvaiability };
 };
 
-const upgradeA = createUpgradeButton("Upgrade A", 10, 0.1, "A");
-const upgradeB = createUpgradeButton("Upgrade B", 100, 2, "B");
-const upgradeC = createUpgradeButton("Upgrade C", 1000, 50, "A");
+const upgradeA = createUpgradeButton("Upgrade A", currentCosts.A, 0.1, "A");
+const upgradeB = createUpgradeButton("Upgrade B", currentCosts.B, 2, "B");
+const upgradeC = createUpgradeButton("Upgrade C", currentCosts.C, 50, "C");
 
 const checkAllUpgrades = () => {
   upgradeA.checkUpgradeAvaiability();
