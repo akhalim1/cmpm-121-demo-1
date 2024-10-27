@@ -104,39 +104,49 @@ button.addEventListener("click", () => {
 
 app.append(button);
 
-// function to make upgrade button
+// upgrade button fix here
+const setUpgradeButtonText = (
+  button: HTMLButtonElement,
+  item: Item,
+  currentCost: number
+) => {
+  button.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${currentCost} fish | Desc: ${item.desc}`;
+};
+
+const createUpgButtonElement = (item: Item): HTMLButtonElement => {
+  const button = document.createElement("button");
+  setUpgradeButtonText(button, item, currentCosts[item.name]);
+  button.disabled = true;
+  return button;
+};
+
+const handleUpgradeClick = (item: Item, button: HTMLButtonElement) => {
+  const currentCost = currentCosts[item.name];
+
+  if (counter >= currentCost) {
+    counter -= currentCost;
+    growthRate += item.rate;
+    itemsPurchased[item.name] += 1;
+    currentCosts[item.name] *= COST_MULTIPLIER;
+
+    setUpgradeButtonText(button, item, currentCosts[item.name]);
+    updateDisplays();
+  }
+};
+
+const checkUpgradeAvaiability = (button: HTMLButtonElement, item: Item) => {
+  button.disabled = counter < currentCosts[item.name];
+};
 
 const createUpgradeButton = (item: Item) => {
-  const upgradeButton = document.createElement("button");
-  upgradeButton.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${item.cost} fish | Desc: ${item.desc}`;
-  upgradeButton.disabled = true;
+  const button = createUpgButtonElement(item);
+  button.addEventListener("click", () => handleUpgradeClick(item, button));
+  app.append(button);
 
-  upgradeButton.addEventListener("click", () => {
-    const currentCost = currentCosts[item.name];
-
-    if (counter >= currentCost) {
-      counter -= currentCost;
-      growthRate += item.rate;
-      itemsPurchased[item.name] += 1;
-      currentCosts[item.name] *= COST_MULTIPLIER;
-
-      upgradeButton.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${currentCosts[item.name].toFixed(2)} fish | Desc: ${item.desc}`;
-
-      updateDisplays();
-    }
-  });
-
-  app.append(upgradeButton);
-
-  const checkUpgradeAvaiability = () => {
-    if (counter < currentCosts[item.name]) {
-      upgradeButton.disabled = true;
-    } else {
-      upgradeButton.disabled = false;
-    }
+  return {
+    button,
+    checkUpgradeAvaiability: () => checkUpgradeAvaiability(button, item),
   };
-
-  return { button: upgradeButton, checkUpgradeAvaiability };
 };
 
 const upgradeButtons = availableItems.map((item) => createUpgradeButton(item));
