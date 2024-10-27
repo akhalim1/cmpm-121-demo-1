@@ -3,6 +3,7 @@ import "./style.css";
 
 const app: HTMLDivElement = document.querySelector("#app")!;
 
+// defining upgrade items
 interface Item {
   name: string;
   cost: number;
@@ -45,11 +46,10 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
-// define variables
+// game state variables
 let counter: number = 0;
 let growthRate: number = 0;
 
-// constants
 const COST_MULTIPLIER = 1.15;
 
 const itemsPurchased: { [key: string]: number } = {};
@@ -60,7 +60,7 @@ availableItems.forEach((item) => {
   currentCosts[item.name] = item.cost;
 });
 
-// displays here
+// creating display elements
 const counterDiv = document.createElement("div");
 counterDiv.textContent = `${counter} fish`;
 app.append(counterDiv);
@@ -71,6 +71,7 @@ app.append(growthRateDiv);
 
 const purchasedItemsDiv = document.createElement("div");
 
+// Update purchase items display
 const updatePurchasedItemsDisplay = () => {
   purchasedItemsDiv.textContent =
     "Purchased: " +
@@ -81,30 +82,23 @@ const updatePurchasedItemsDisplay = () => {
 
 app.append(purchasedItemsDiv);
 
-// helper functions here
 const updateDisplays = () => {
   counterDiv.textContent = `${counter} fish`;
   growthRateDiv.textContent = `${growthRate.toFixed(2)} fish/sec`;
   updatePurchasedItemsDisplay();
 };
 
-// click
+// Manual fish clicking
 const button = document.createElement("button");
 button.textContent = "🎣CAST YOUR LINE!";
 button.addEventListener("click", () => {
-  // console.log("Clicked");
   counter += 1;
   updateDisplays();
-  /*
-  if (counter >= 10) {
-    upgradeButton.disabled = false;
-  }
-  */
 });
 
 app.append(button);
 
-// upgrade button fix here
+// functions to manage upgrade buttons
 const setUpgradeButtonText = (
   button: HTMLButtonElement,
   item: Item,
@@ -155,14 +149,12 @@ const checkAllUpgrades = () => {
   upgradeButtons.forEach((upgrade) => upgrade.checkUpgradeAvaiability());
 };
 
-// growth rate
+// automatic fish collection based on growth rate
 let lastFrameTime = performance.now();
 
 const incrementCounter = (currentTime: DOMHighResTimeStamp) => {
   const value = (currentTime - lastFrameTime) / 1000;
   counter += growthRate * value;
-
-  // counterDiv.textContent = `${counter} swords`;
   updateDisplays();
   checkAllUpgrades();
 
