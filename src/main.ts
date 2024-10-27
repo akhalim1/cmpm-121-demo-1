@@ -49,8 +49,10 @@ app.append(header);
 let counter: number = 0;
 let growthRate: number = 0;
 
-const itemsPurchased: { [key: string]: number } = {};
+// constants
+const COST_MULTIPLIER = 1.15;
 
+const itemsPurchased: { [key: string]: number } = {};
 const currentCosts: { [key: string]: number } = {};
 
 availableItems.forEach((item) => {
@@ -103,6 +105,7 @@ button.addEventListener("click", () => {
 app.append(button);
 
 // function to make upgrade button
+
 const createUpgradeButton = (item: Item) => {
   const upgradeButton = document.createElement("button");
   upgradeButton.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${item.cost} fish | Desc: ${item.desc}`;
@@ -115,7 +118,7 @@ const createUpgradeButton = (item: Item) => {
       counter -= currentCost;
       growthRate += item.rate;
       itemsPurchased[item.name] += 1;
-      currentCosts[item.name] *= 1.15;
+      currentCosts[item.name] *= COST_MULTIPLIER;
 
       upgradeButton.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${currentCosts[item.name].toFixed(2)} fish | Desc: ${item.desc}`;
 
