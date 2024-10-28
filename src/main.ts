@@ -62,7 +62,7 @@ availableItems.forEach((item) => {
 
 // creating display elements
 const counterDiv = document.createElement("div");
-counterDiv.textContent = `${counter} fish`;
+counterDiv.textContent = `${counter.toFixed(2)} fish`;
 app.append(counterDiv);
 
 const growthRateDiv = document.createElement("div");
@@ -89,14 +89,28 @@ const updateDisplays = () => {
 };
 
 // Manual fish clicking
+const buttonContainer = document.createElement("div");
+buttonContainer.classList.add("manual-clicker-container");
+
 const button = document.createElement("button");
-button.textContent = "🎣CAST YOUR LINE!";
+button.classList.add("manual-clicker");
+button.innerHTML = "<span class='reel'>🎣</span>";
+
 button.addEventListener("click", () => {
+  const reel = button.querySelector(".reel") as HTMLElement | null;
+
+  if (reel) {
+    reel?.classList.remove("animate-reel");
+    void reel?.offsetWidth;
+    reel?.classList.add("animate-reel");
+  }
+
   counter += 1;
   updateDisplays();
 });
 
-app.append(button);
+buttonContainer.append(button);
+app.append(buttonContainer);
 
 // functions to manage upgrade buttons
 const setUpgradeButtonText = (
@@ -104,7 +118,7 @@ const setUpgradeButtonText = (
   item: Item,
   currentCost: number
 ) => {
-  button.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${currentCost} fish | Desc: ${item.desc}`;
+  button.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${currentCost.toFixed(2)} fish | Desc: ${item.desc}`;
 };
 
 const createUpgButtonElement = (item: Item): HTMLButtonElement => {

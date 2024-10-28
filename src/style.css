@@ -41,6 +41,8 @@ h1 {
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  align-items: center;
+  gap: 1rem;
 }
 
 button {
@@ -54,9 +56,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -73,4 +77,54 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  animation: moveTitle 2s ease-in-out infinite;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  animation: changeBackground 5s ease-in-out infinite;
+}
+
+@keyframes reelAnimation {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.reel {
+  display: inline-block;
+  font-size: 1.2em;
+}
+
+.animate-reel {
+  animation: reelAnimation 0.5s ease-in-out;
+}
+
+.manual-clicker {
+  font-size: 3em;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.manual-clicker:focus {
+  outline: none;
 }
