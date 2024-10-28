@@ -11,6 +11,14 @@ interface Item {
   desc: string;
 }
 
+const buttonColors = [
+  "#b3e5fc", // Assistant - light teal
+  "#4fc3f7", // Fishing Boat - medium teal
+  "#0288d1", // Fishing Net - dark teal
+  "#01579b", // Fishing Trawler - deep sea blue
+  "#002f6c", // Deep Sea Sonar - very dark navy blue
+];
+
 const availableItems: Item[] = [
   { name: "Assistant", cost: 10, rate: 0.1, desc: "Helper to snag more fish." },
   {
@@ -83,7 +91,7 @@ const updatePurchasedItemsDisplay = () => {
 app.append(purchasedItemsDiv);
 
 const updateDisplays = () => {
-  counterDiv.textContent = `${counter} fish`;
+  counterDiv.textContent = `${counter.toFixed(2)} fish`;
   growthRateDiv.textContent = `${growthRate.toFixed(2)} fish/sec`;
   updatePurchasedItemsDisplay();
 };
@@ -121,13 +129,6 @@ const setUpgradeButtonText = (
   button.textContent = `Purchase ${item.name} | Reward: +${item.rate} growth rate | Cost: ${currentCost.toFixed(2)} fish | Desc: ${item.desc}`;
 };
 
-const createUpgButtonElement = (item: Item): HTMLButtonElement => {
-  const button = document.createElement("button");
-  setUpgradeButtonText(button, item, currentCosts[item.name]);
-  button.disabled = true;
-  return button;
-};
-
 const handleUpgradeClick = (item: Item, button: HTMLButtonElement) => {
   const currentCost = currentCosts[item.name];
 
@@ -146,8 +147,19 @@ const checkUpgradeAvaiability = (button: HTMLButtonElement, item: Item) => {
   button.disabled = counter < currentCosts[item.name];
 };
 
-const createUpgradeButton = (item: Item) => {
-  const button = createUpgButtonElement(item);
+const createUpgButtonElement = (
+  item: Item,
+  color: string
+): HTMLButtonElement => {
+  const button = document.createElement("button");
+  setUpgradeButtonText(button, item, currentCosts[item.name]);
+  button.disabled = true;
+  button.style.backgroundColor = color;
+  return button;
+};
+
+const createUpgradeButton = (item: Item, index: number) => {
+  const button = createUpgButtonElement(item, buttonColors[index]);
   button.addEventListener("click", () => handleUpgradeClick(item, button));
   app.append(button);
 
@@ -157,7 +169,9 @@ const createUpgradeButton = (item: Item) => {
   };
 };
 
-const upgradeButtons = availableItems.map((item) => createUpgradeButton(item));
+const upgradeButtons = availableItems.map((item, index) =>
+  createUpgradeButton(item, index)
+);
 
 const checkAllUpgrades = () => {
   upgradeButtons.forEach((upgrade) => upgrade.checkUpgradeAvaiability());
